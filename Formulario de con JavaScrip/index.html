@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libreria</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Biblioteca</h1>
+        <h2>Actualización de Libros</h2>
+        <div class="alert d-none" role="alert" id="message">
+        </div>
+        <form method="post" action="./back.js" id="formulario">
+            <div class="mb-3">
+                <label for="reference" class="form-label">ID</label>
+                <input type="text" class="form-control" id="reference" aria-describedby="emailHelp" placeholder="Ingrese ID del Libro">
+                <span id="mreference" style="color:red;font-weight: bold;"></span>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="description" placeholder="Ingrese Nombre del Libro">
+                <span id="mdescription" style="color:red;font-weight: bold;"></span>
+              </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Género</label>
+                <select id="genero" class="form-select" aria-label="Default select example">
+                    <option selected>Seleccione Género</option>
+                    <option value="Ciencias">Ciencias</option>
+                    <option value="Sociales">Sociales</option>
+                    <option value="Matemáticas">Matemáticas</option>
+                </select>
+                <span id="munitprice" style="color:red;font-weight: bold;"></span>
+            </div>
+            <label for="stock" class="form-label">Estado</label>
+            <div class="form-check" container>
+                <input  class="form-check-input" type="radio" value="disponible" name="disponible" id="disponible" checked>
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Disponible
+                </label> <br>
+              
+                <input class="form-check-input" type="radio" value="nodisponible"  name="disponible" id="nodisponible">
+                <label class="form-check-label" for="flexRadioDefault2">
+                  No Disponible
+                </label>
+              </div> <br>
+        
+            <button type="button" class="btn btn-primary" id="btnadd">Guardar</button>
+            <button type="button" class="btn btn-secondary" id="btnsearch">Buscar</button>
+            <button type="button" class="btn btn-success" id="btnupdate">Actualizar</button>
+            <button type="button" class="btn btn-danger" id="btndelete">Limpiar</button>
+            
+
+        </form>
+    </div>
+
+    <script>
+let reference = document.getElementById('reference');
+let description = document.getElementById('description');
+let genero = document.getElementById('genero');
+let disponible = document.getElementById('disponible');
+let nodisponible = document.getElementById('nodisponible');
+
+let mreference = document.getElementById('mreference');
+let mdescription = document.getElementById('mdescription');
+
+     let btnadd    = document.getElementById('btnadd');     
+     let btnsearch = document.getElementById('btnsearch');
+     let btnupdate = document.getElementById('btnupdate');
+     let btndelete = document.getElementById('btndelete');
+let btnlist   = document.getElementById('btnlist');
+const productos = [  ];
+
+//Boton Actualizar 
+
+btnupdate.addEventListener('click',()=>{
+
+
+  let buscarproducto = productos.find(prod => prod.reference == reference.value)
+
+        if (buscarproducto == undefined || buscarproducto.reference== reference.value ){
+        //  console.log (refdigitada)
+          
+          //Toma el indice de la referencia encontrada 
+          oldReferenceIndex=productos.findIndex(prd => prd.reference == reference.value);
+
+          productos.splice(oldReferenceIndex,1,{reference:reference.value, description:description.value,genero:genero.value,disponible:disponible.value });
+       
+          console.log (productos);
+
+        }
+       
+        else alert("La referencia corresponde a otro producto")
+        })
+
+
+
+btndelete.addEventListener('click',()=>{
+  reference.value="";
+  description.value="";
+  genero.value="";
+  genero.value="Seleccione Género";
+  disponible.checked=true;
+});
+
+
+//Boton buscar
+btnsearch.addEventListener('click',()=>{
+
+  var refbuscada = reference.value
+ 
+if(reference.value != ""){
+   
+  //Buscar la referencia en el arreglo de objetos productos
+  let mprodFind = productos.find(prod => prod.reference == reference.value);
+   
+  //Si encuentra la referencia 
+  if(mprodFind != undefined){
+    //Asignar el contenido del objeto, en sus campos a cada input 
+     
+    
+    description.value=mprodFind.description
+    genero.value=mprodFind.genero
+  
+    //Asignar valor a check box   
+    if(mprodFind.disponible=="disponible"){
+       
+        disponible.checked = true;
+    }
+    else nodisponible.checked = true;
+   
+       //Desaparece mensaje de notificación
+       message.classList.add('d-none');   
+
+    //Los datos quedan como un objeto que para seguimiento vamos a ver en 
+    
+    const refbuscada = reference.value;
+    console.log(refbuscada);
+    return refbuscada;
+
+  }  
+} 
+//Si no encuentra la referencia en el arreglo de productos
+else {
+    alert("Digite una referencia"); 
+
+}
+
+});//Fin boton buscar
+
+
+
+//boton add 
+
+btnadd.addEventListener('click',()=>{
+            if(reference.value != "" &&  description.value != "" && genero.value !=""){
+            if (genero.value=="Seleccione Genero" ){
+                alert("seleccione-genero")
+                }else{
+                //Guardar el producto en el arreglo de objetos productos
+                //Bucsra la referencia del producto }
+                let buscarproducto = productos.find(prod => prod.reference == reference.value)
+                
+                //Pregunta de que no encontro la referencia 
+                if(buscarproducto == undefined) {
+                //Generar el objeto con cada uno de los datos del producto contenidos en cada campo 
+                let nvoproducto = {reference:reference.value, description:description.value, genero:genero.value, disponible}
+                
+                
+                productos.push(nvoproducto);
+                if(document.getElementById('disponible').checked){
+                  nvoproducto.disponible = "disponible"
+                  } 
+                  //Si no encuentra la referencia en el arreglo de productos
+                  else {
+                    nvoproducto.disponible="nodisponible"
+                  }
+               
+                console.log(productos) 
+                //emitir mensaje de producto guardado 
+                /*   message.classList.remove("alert-danger");
+                message.classList.add("alert-success");*/
+                reference.value="";
+                description.value="";
+                genero.value="";
+                genero.value="Seleccione Género";
+                disponible.checked=true;
+                
+                alert("Guardado con exito")
+                
+            }
+            //Ya existe la referencia dentro del arreglo 
+            else{
+                message.classList.remove("d-none");
+                message.classList.add("success-alert");
+                message.textContent="Este ejemplar ya existe"
+            }
+        }
+        }else{
+            //Mensaje de los campos vacios 
+                if(reference.value == ""){
+                    mreference.textContent ="El id es obligatorio"
+                } if (description.value == ""){
+                    mdescription.textContent ="El nombre es obligatoria"
+                }
+                else{
+                message.classList.remove('d-none');
+                message.classList.add("alert-danger");
+                message.textContent="Debe ingresar todos los datos..."
+            }
+        }
+        })
+
+ 
+        
+        console.log (productos);
+
+        //Fin boton add
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+</body>
+</html>
